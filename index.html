@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Valentine's Quest</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-wrapper">
+        <div id="game-container"></div>
+    </div>
+    <div id="memory-modal" style="display: none;">
+        <span class="close-button">&times;</span>
+        <img src="" alt="Memory">
+        <p></p>
+    </div>
+    <div id="gate-modal" style="display: none;">
+        <span class="close-button">&times;</span>
+        <h2 id="gate-modal-title"></h2>
+        <p id="gate-modal-message"></p>
+        <p id="gate-modal-progress"></p>
+    </div>
+    <div id="valentine-modal" style="display: none;">
+        <h1>Special Question</h1>
+        <p id="valentine-message">Will you be my Valentine?</p>
+        <div class="valentine-buttons">
+            <button id="valentine-yes">Yes!</button>
+            <button id="valentine-no">No</button>
+        </div>
+    </div>
+    <div id="start-screen" style="display: block;">
+        <h1>Valentine's Quest</h1>
+        <p id="start-message">Do you want to go on an Adventure?</p>
+        <div class="start-buttons">
+            <button id="start-yes">Begin Adventure</button>
+        </div>
+    </div>
+    <div id="instructions-modal" style="display: none;">
+        <div class="instructions-content">
+            <p>Use</p>
+            <img src="Assets/images/instruction_keys.webp" alt="Arrow Keys" class="keys-image">
+            <p>to move around</p>
+            <div class="collect-instruction">
+                <p>Collect all</p>
+                <img src="Assets/images/heart_collectible.png" alt="Heart" class="heart-icon">
+            </div>
+            <button id="instructions-ok">Got it!</button>
+        </div>
+    </div>
+    <div id="ending-message" style="display: none;">
+        <h1>Happy Valentines Day Love</h1>
+    </div>
+    <script src="game.js"></script>
+    <script src="ui.js"></script>
+</body>
+</html>

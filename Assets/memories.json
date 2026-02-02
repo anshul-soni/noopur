@@ -1,0 +1,60 @@
+{
+    "memories": [
+      {
+        "id": 1,
+        "x": 250,
+        "y": 150,
+        "imageUrl": "Assets/images/memories/wedding.jpg",
+        "note": "Our wedding day",
+        "collected": false
+      },
+      {
+        "id": 2,
+        "x": 950,
+        "y": 350,
+        "imageUrl": "Assets/images/memories/hawaii.jpg",
+        "note": "Hawaii trip",
+        "collected": false
+      },
+      {
+        "id": 3,
+        "x": 350,
+        "y": 650,
+        "imageUrl": "Assets/images/memories/moab.jpg",
+        "note": "Moab adventure",
+        "collected": false
+      },
+      {
+        "id": 4,
+        "x": 1200,
+        "y": 600,
+        "imageUrl": "Assets/images/memories/datenight1.jpg",
+        "note": "Date night",
+        "collected": false
+      },
+      {
+        "id": 5,
+        "x": 600,
+        "y": 150,
+        "imageUrl": "Assets/images/memories/datenight2.jpg",
+        "note": "Another date night",
+        "collected": false
+      },
+      {
+        "id": 6,
+        "x": 1150,
+        "y": 350,
+        "imageUrl": "Assets/images/memories/hawaii2.jpg",
+        "note": "More Hawaii memories",
+        "collected": false
+      },
+      {
+        "id": 7,
+        "x": 750,
+        "y": 650,
+        "imageUrl": "Assets/images/memories/christmas.jpg",
+        "note": "Christmas together",
+        "collected": false
+      }
+    ]
+  }

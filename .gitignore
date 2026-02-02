@@ -1,0 +1,11 @@
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Development docs
+.github/
+Assets/ASSET_MANIFEST.md

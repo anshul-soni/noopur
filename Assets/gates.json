@@ -1,0 +1,11 @@
+{
+  "gates": [
+    {
+      "id": 1,
+      "x": 200,
+      "y": 420,
+      "lockedMessage": "You need to collect all the memories before you can pass through this gate.",
+      "unlockedMessage": "The gate is now open! You've collected all the memories."
+    }
+  ]
+}
