@@ -271,9 +271,12 @@ class GameScene extends Phaser.Scene {
         this.player.body.setSize(hitboxWidth, hitboxHeight);
         this.player.body.setOffset((this.player.width - hitboxWidth) / 2, this.player.height - hitboxHeight);
 
-        // Camera follow player for mobile
-        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-        this.cameras.main.setZoom(1.5);
+        // Camera follow player only on mobile/touch devices
+        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+        if (isTouchDevice) {
+            this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+            this.cameras.main.setZoom(1.5);
+        }
 
         this.anims.create({
             key: 'left',
