@@ -1,3 +1,6 @@
+// Get touch controls element once for reuse
+const touchControls = document.getElementById('touch-controls');
+
 function setupUI(game) {
     const memoryModal = document.getElementById('memory-modal');
     const memoryCloseButton = memoryModal.querySelector('.close-button');
@@ -169,7 +172,6 @@ function setupUI(game) {
             }
 
             // Hide touch controls on end screen
-            const touchControls = document.getElementById('touch-controls');
             if (touchControls) {
                 touchControls.classList.remove('game-active');
             }
@@ -231,7 +233,6 @@ function setupStartScreen(game) {
         instructionsModal.style.display = 'none';
 
         // Show touch controls for mobile
-        const touchControls = document.getElementById('touch-controls');
         if (touchControls) {
             touchControls.classList.add('game-active');
         }
