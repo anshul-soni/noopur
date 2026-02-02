@@ -274,8 +274,10 @@ class GameScene extends Phaser.Scene {
         // Camera follow player only on mobile/touch devices
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
         if (isTouchDevice) {
-            this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-            this.cameras.main.setZoom(1.5);
+            const MOBILE_CAMERA_LERP = 0.1;
+            const MOBILE_CAMERA_ZOOM = 1.5;
+            this.cameras.main.startFollow(this.player, true, MOBILE_CAMERA_LERP, MOBILE_CAMERA_LERP);
+            this.cameras.main.setZoom(MOBILE_CAMERA_ZOOM);
         }
 
         this.anims.create({
