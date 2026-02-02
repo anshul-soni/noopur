@@ -168,6 +168,12 @@ function setupUI(game) {
                 endingMessage.style.display = 'block';
             }
 
+            // Hide touch controls on end screen
+            const touchControls = document.getElementById('touch-controls');
+            if (touchControls) {
+                touchControls.classList.remove('game-active');
+            }
+
             // Stop theme music and play celebration song
             if (window.themeMusic && window.themeMusic.isPlaying) {
                 window.themeMusic.stop();
@@ -223,6 +229,12 @@ function setupStartScreen(game) {
     instructionsOkButton.addEventListener('click', () => {
         // Hide instructions modal
         instructionsModal.style.display = 'none';
+
+        // Show touch controls for mobile
+        const touchControls = document.getElementById('touch-controls');
+        if (touchControls) {
+            touchControls.classList.add('game-active');
+        }
 
         // Start the game
         game.events.emit('startGame');
