@@ -271,6 +271,10 @@ class GameScene extends Phaser.Scene {
         this.player.body.setSize(hitboxWidth, hitboxHeight);
         this.player.body.setOffset((this.player.width - hitboxWidth) / 2, this.player.height - hitboxHeight);
 
+        // Camera follow player for mobile
+        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+        this.cameras.main.setZoom(1.5);
+
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('hero_left', { start: 0, end: 35 }),
@@ -306,6 +310,26 @@ class GameScene extends Phaser.Scene {
         });
 
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        // Touch controls for mobile
+        this.touchInput = { left: false, right: false, up: false, down: false };
+        ['up', 'down', 'left', 'right'].forEach(dir => {
+            const btn = document.getElementById(`touch-${dir}`);
+            if (btn) {
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.touchInput[dir] = true;
+                });
+                btn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.touchInput[dir] = false;
+                });
+                // Also handle mouse for testing on desktop
+                btn.addEventListener('mousedown', () => { this.touchInput[dir] = true; });
+                btn.addEventListener('mouseup', () => { this.touchInput[dir] = false; });
+                btn.addEventListener('mouseleave', () => { this.touchInput[dir] = false; });
+            }
+        });
 
         // DEBUG: Add 'R' key to reset game state (for testing)
         this.input.keyboard.on('keydown-R', () => {
@@ -419,16 +443,16 @@ class GameScene extends Phaser.Scene {
         let velocityY = 0;
         let currentAnim = 'turn';
 
-        if (this.cursors.left.isDown) {
+        if (this.cursors.left.isDown || this.touchInput.left) {
             velocityX = -speed;
             currentAnim = 'left';
-        } else if (this.cursors.right.isDown) {
+        } else if (this.cursors.right.isDown || this.touchInput.right) {
             velocityX = speed;
             currentAnim = 'right';
-        } else if (this.cursors.up.isDown) {
+        } else if (this.cursors.up.isDown || this.touchInput.up) {
             velocityY = -speed;
             currentAnim = 'up';
-        } else if (this.cursors.down.isDown) {
+        } else if (this.cursors.down.isDown || this.touchInput.down) {
             velocityY = speed;
             currentAnim = 'down';
         }
@@ -468,6 +492,10 @@ const config = {
     width: 1400,
     height: 800,
     parent: 'game-container',
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     physics: {
         default: 'arcade',
         arcade: {

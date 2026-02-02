@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Valentine's Quest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -12,6 +13,14 @@
     </div>
     <div id="game-wrapper">
         <div id="game-container"></div>
+    </div>
+    <div id="touch-controls">
+        <button id="touch-up" class="touch-btn">▲</button>
+        <div class="touch-row">
+            <button id="touch-left" class="touch-btn">◀</button>
+            <button id="touch-down" class="touch-btn">▼</button>
+            <button id="touch-right" class="touch-btn">▶</button>
+        </div>
     </div>
     <div id="memory-modal" style="display: none;">
         <span class="close-button">&times;</span>
