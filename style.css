@@ -372,3 +372,42 @@ body {
     box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
 }
 
+/* Splash Screen */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+}
+
+#splash-start {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 25px 60px;
+    font-size: 32px;
+    font-weight: bold;
+    font-family: 'Comic Sans MS', 'Georgia', cursive;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+#splash-start:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 50px rgba(255, 255, 255, 0.9); }
+}
+

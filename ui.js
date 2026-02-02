@@ -229,11 +229,35 @@ function setupStartScreen(game) {
     });
 }
 
+// Splash screen logic
+function setupSplashScreen(game) {
+    const splashScreen = document.getElementById('splash-screen');
+    const splashButton = document.getElementById('splash-start');
+    const startScreen = document.getElementById('start-screen');
+
+    splashButton.addEventListener('click', () => {
+        // Unlock audio context
+        if (game.sound.context && game.sound.context.state === 'suspended') {
+            game.sound.context.resume();
+        }
+
+        // Start opening theme music
+        if (window.openingTheme && !window.openingTheme.isPlaying) {
+            window.openingTheme.play();
+        }
+
+        // Hide splash, show start screen
+        splashScreen.style.display = 'none';
+        startScreen.style.display = 'block';
+    });
+}
+
 // Poll for the game object to be ready
 const poll_for_game = setInterval(() => {
     if (window.game && window.game.scene.getScenes(true).length > 0) {
         clearInterval(poll_for_game);
         setupUI(window.game);
+        setupSplashScreen(window.game);
         setupStartScreen(window.game);
     }
 }, 100);

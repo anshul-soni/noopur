@@ -118,6 +118,9 @@ class StartScene extends Phaser.Scene {
 
         // Load celebration song for final screen
         this.load.audio('celebration_song', 'Assets/music/Abhi Na Jao Chhod Kar - LoFi Mix(KoshalWorld.Com).mp3');
+
+        // Load opening theme for start screen
+        this.load.audio('opening_theme', 'Assets/music/opening theme.mp3');
     }
 
     create() {
@@ -149,9 +152,16 @@ class StartScene extends Phaser.Scene {
         // Create celebration music and expose globally
         window.celebrationMusic = this.sound.add('celebration_song', { volume: 0.7, loop: true });
 
+        // Create opening theme music (played when Begin Adventure is clicked)
+        window.openingTheme = this.sound.add('opening_theme', { volume: 0.5, loop: true });
+
         // Listen for startGame event from UI
         this.game.events.on('startGame', () => {
             console.log('🎮 Starting game scene...');
+            // Stop opening theme when game starts
+            if (window.openingTheme && window.openingTheme.isPlaying) {
+                window.openingTheme.stop();
+            }
             // Stop celebration music if playing (from restart)
             if (window.celebrationMusic && window.celebrationMusic.isPlaying) {
                 window.celebrationMusic.stop();
