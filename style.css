@@ -422,7 +422,7 @@ body {
 }
 
 @media (pointer: coarse) {
-    #touch-controls {
+    #touch-controls.game-active {
         display: flex;
         flex-direction: column;
         align-items: center;
