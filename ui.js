@@ -106,7 +106,7 @@ function setupUI(game) {
 
     game.events.on('valentineProposal', () => {
         valentineRetryCount = 0;
-        valentineMessage.textContent = 'Will you be my Valentine?';
+        valentineMessage.textContent = 'Given that we did so much together this year, will you be my Valentine?';
         valentineModal.style.display = 'block';
     });
 
