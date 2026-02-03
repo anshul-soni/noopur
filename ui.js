@@ -4,6 +4,15 @@
 const CONFETTI_PARTICLE_COUNT = 50;
 const CONFETTI_INTERVAL_MS = 250;
 const CONFETTI_Z_INDEX = 10003;
+const CONFETTI_START_VELOCITY = 30;
+const CONFETTI_SPREAD = 360;
+const CONFETTI_TICKS = 60;
+const CONFETTI_ORIGIN_X_MIN = 0.1;
+const CONFETTI_ORIGIN_X_MAX_LEFT = 0.3;
+const CONFETTI_ORIGIN_X_MIN_RIGHT = 0.7;
+const CONFETTI_ORIGIN_X_MAX = 0.9;
+const CONFETTI_ORIGIN_Y_OFFSET = 0.2;
+const CONFETTI_COLORS = ['#ff69b4', '#ff1493', '#ffc0cb', '#ff85c1', '#ffffff'];
 const CELEBRATION_DELAY_MS = 2000;
 const CELEBRATION_MUSIC_DELAY_MS = 100;
 const FADE_TRANSITION_MS = 500;
@@ -133,7 +142,7 @@ function setupUI(game) {
         }
 
         // Trigger infinite confetti celebration!
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: CONFETTI_Z_INDEX };
+        const defaults = { startVelocity: CONFETTI_START_VELOCITY, spread: CONFETTI_SPREAD, ticks: CONFETTI_TICKS, zIndex: CONFETTI_Z_INDEX };
 
         function randomInRange(min, max) {
             return Math.random() * (max - min) + min;
@@ -144,13 +153,13 @@ function setupUI(game) {
             // Create confetti bursts from different positions
             confetti(Object.assign({}, defaults, {
                 particleCount: CONFETTI_PARTICLE_COUNT,
-                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-                colors: ['#ff69b4', '#ff1493', '#ffc0cb', '#ff85c1', '#ffffff']
+                origin: { x: randomInRange(CONFETTI_ORIGIN_X_MIN, CONFETTI_ORIGIN_X_MAX_LEFT), y: Math.random() - CONFETTI_ORIGIN_Y_OFFSET },
+                colors: CONFETTI_COLORS
             }));
             confetti(Object.assign({}, defaults, {
                 particleCount: CONFETTI_PARTICLE_COUNT,
-                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-                colors: ['#ff69b4', '#ff1493', '#ffc0cb', '#ff85c1', '#ffffff']
+                origin: { x: randomInRange(CONFETTI_ORIGIN_X_MIN_RIGHT, CONFETTI_ORIGIN_X_MAX), y: Math.random() - CONFETTI_ORIGIN_Y_OFFSET },
+                colors: CONFETTI_COLORS
             }));
         }, CONFETTI_INTERVAL_MS);
 

@@ -251,6 +251,12 @@ class GameScene extends Phaser.Scene {
         this.noSound = null;
     }
 
+    // Helper method to set player hitbox consistently
+    _setPlayerHitbox() {
+        this.player.body.setSize(PLAYER_HITBOX_WIDTH, PLAYER_HITBOX_HEIGHT);
+        this.player.body.setOffset((this.player.width - PLAYER_HITBOX_WIDTH) / 2, this.player.height - PLAYER_HITBOX_HEIGHT);
+    }
+
     preload() {
         // Load saved game state before creating scene
         loadGameState();
@@ -322,8 +328,7 @@ class GameScene extends Phaser.Scene {
         this.player.setScale(PLAYER_SCALE);
 
         // Set collision box in TEXTURE SPACE (will scale with sprite)
-        this.player.body.setSize(PLAYER_HITBOX_WIDTH, PLAYER_HITBOX_HEIGHT);
-        this.player.body.setOffset((this.player.width - PLAYER_HITBOX_WIDTH) / 2, this.player.height - PLAYER_HITBOX_HEIGHT);
+        this._setPlayerHitbox();
 
         // Camera follow player only on mobile/touch devices
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
@@ -529,8 +534,7 @@ class GameScene extends Phaser.Scene {
             this.player.setTexture(textureKey);
 
             // Re-apply hitbox in texture space
-            this.player.body.setSize(PLAYER_HITBOX_WIDTH, PLAYER_HITBOX_HEIGHT);
-            this.player.body.setOffset((this.player.width - PLAYER_HITBOX_WIDTH) / 2, this.player.height - PLAYER_HITBOX_HEIGHT);
+            this._setPlayerHitbox();
         }
 
         this.player.anims.play(currentAnim, true);
