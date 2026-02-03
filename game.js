@@ -1,3 +1,66 @@
+// ============================================
+// GAME CONSTANTS
+// ============================================
+
+// Grid dimensions
+const GRID_COLS = 14;
+const GRID_ROWS = 8;
+const TILE_SIZE = 100;
+
+// Game canvas dimensions
+const GAME_WIDTH = GRID_COLS * TILE_SIZE;  // 1400
+const GAME_HEIGHT = GRID_ROWS * TILE_SIZE; // 800
+
+// Player settings
+const PLAYER_START_X = 150;
+const PLAYER_START_Y = 150;
+const PLAYER_SCALE = 0.3;
+const PLAYER_SPEED = 160;
+const PLAYER_HITBOX_WIDTH = 50;
+const PLAYER_HITBOX_HEIGHT = 200;
+
+// Heart collectible settings
+const HEART_SCALE = 0.05;
+
+// Gate settings
+const GATE_SCALE = 0.1;
+const GATE_HITBOX_MULTIPLIER = 0.8;
+const GATE_COLLISION_COOLDOWN_MS = 1000;
+
+// Animation settings
+const DANCE_FRAME_RATE = 36;
+const DANCE_END_FRAME = 35;
+const WALK_FRAME_RATE = 36;
+const BACK_WALK_FRAME_RATE = 20;
+const BACK_WALK_END_FRAME = 18;
+
+// Audio volumes
+const THEME_MUSIC_VOLUME = 0.3;
+const CELEBRATION_MUSIC_VOLUME = 0.7;
+const OPENING_THEME_VOLUME = 0.5;
+const HEART_SOUND_VOLUME = 0.7;
+const GATE_SOUND_VOLUME = 0.8;
+const YES_NO_SOUND_VOLUME = 0.8;
+
+// Start screen hero position
+const START_HERO_X = 700;
+const START_HERO_Y = 200;
+
+// Mobile camera settings
+const MOBILE_CAMERA_LERP = 0.1;
+const MOBILE_CAMERA_ZOOM = 1.5;
+
+// Sprite frame dimensions (from asset files)
+const HERO_DANCE_FRAME = { width: 195, height: 264 };
+const HERO_FRONT_FRAME = { width: 113, height: 260 };
+const HERO_BACK_FRAME = { width: 106, height: 257 };
+const HERO_LEFT_FRAME = { width: 136, height: 269 };
+const HERO_RIGHT_FRAME = { width: 128, height: 266 };
+
+// ============================================
+// MAZE LAYOUT
+// ============================================
+
 // Maze layout: 14 columns × 8 rows (0 = walkable path, 1 = wall)
 const MAZE_LAYOUT = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1],  // Row 0 - Top wall
@@ -10,13 +73,11 @@ const MAZE_LAYOUT = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1]   // Row 7 - Bottom wall
 ];
 
-const TILE_SIZE = 100; // Each tile is 100x100 pixels
-
 // Global gameState object - Single source of truth for all game state
 const gameState = {
     player: {
-        x: 150,  // Grid (1,1) = 150, 150
-        y: 150
+        x: PLAYER_START_X,
+        y: PLAYER_START_Y
     },
     collected: {}, // Track collected memories by ID
     memories: [] // Will be populated from JSON
@@ -38,12 +99,12 @@ class MemoryManager {
             }
 
             const heart = this.heartsGroup.create(memory.x, memory.y, 'heart');
-            heart.setScale(0.05);
+            heart.setScale(HEART_SCALE);
             heart.setData('memoryId', memory.id);
             heart.setData('memory', memory);
 
             // Set collision in TEXTURE SPACE (will scale with sprite)
-            const hitboxSize = heart.width * 0.05;
+            const hitboxSize = heart.width * HEART_SCALE;
             heart.body.setSize(hitboxSize, hitboxSize);
             heart.body.setOffset((heart.width - hitboxSize) / 2, (heart.height - hitboxSize) / 2);
         });
@@ -66,9 +127,9 @@ class GateManager {
     spawnGates() {
         this.gatesData.forEach(gateData => {
             const gate = this.scene.physics.add.sprite(gateData.x, gateData.y, 'gate_locked');
-            gate.setScale(0.1);
+            gate.setScale(GATE_SCALE);
             gate.setImmovable(true);
-            gate.body.setSize(gate.width * 0.8, gate.height * 0.8);
+            gate.body.setSize(gate.width * GATE_HITBOX_MULTIPLIER, gate.height * GATE_HITBOX_MULTIPLIER);
             gate.setData('gateData', gateData);
             gate.setData('isUnlocked', false);
             this.gates.push(gate);
@@ -111,7 +172,7 @@ class StartScene extends Phaser.Scene {
 
     preload() {
         // Load hero dance spritesheet
-        this.load.spritesheet('hero_dance', 'Assets/images/character/hero_dance.png', { frameWidth: 195, frameHeight: 264 });
+        this.load.spritesheet('hero_dance', 'Assets/images/character/hero_dance.png', { frameWidth: HERO_DANCE_FRAME.width, frameHeight: HERO_DANCE_FRAME.height });
 
         // Load background tile for start screen
         this.load.image('heart_tile', 'Assets/images/tiles/walkable_tile.png');
@@ -125,35 +186,33 @@ class StartScene extends Phaser.Scene {
 
     create() {
         // Create grass background
-        const tileSize = 100;
-        for (let row = 0; row < 8; row++) {
-            for (let col = 0; col < 14; col++) {
-                const x = col * tileSize + tileSize / 2;
-                const y = row * tileSize + tileSize / 2;
+        for (let row = 0; row < GRID_ROWS; row++) {
+            for (let col = 0; col < GRID_COLS; col++) {
+                const x = col * TILE_SIZE + TILE_SIZE / 2;
+                const y = row * TILE_SIZE + TILE_SIZE / 2;
                 const tile = this.add.sprite(x, y, 'heart_tile');
-                tile.setScale(tileSize / tile.width);
+                tile.setScale(TILE_SIZE / tile.width);
             }
         }
 
         // Create dancing hero in center
-        const hero = this.add.sprite(700, 200, 'hero_dance');
-        hero.setScale(1.0);
+        const hero = this.add.sprite(START_HERO_X, START_HERO_Y, 'hero_dance');
 
         // Create dance animation
         this.anims.create({
             key: 'dance',
-            frames: this.anims.generateFrameNumbers('hero_dance', { start: 0, end: 35 }),
-            frameRate: 36,
+            frames: this.anims.generateFrameNumbers('hero_dance', { start: 0, end: DANCE_END_FRAME }),
+            frameRate: DANCE_FRAME_RATE,
             repeat: -1
         });
 
         hero.anims.play('dance');
 
         // Create celebration music and expose globally
-        window.celebrationMusic = this.sound.add('celebration_song', { volume: 0.7, loop: true });
+        window.celebrationMusic = this.sound.add('celebration_song', { volume: CELEBRATION_MUSIC_VOLUME, loop: true });
 
         // Create opening theme music (played when Begin Adventure is clicked)
-        window.openingTheme = this.sound.add('opening_theme', { volume: 0.5, loop: true });
+        window.openingTheme = this.sound.add('opening_theme', { volume: OPENING_THEME_VOLUME, loop: true });
 
         // Listen for startGame event from UI
         this.game.events.on('startGame', () => {
@@ -196,10 +255,10 @@ class GameScene extends Phaser.Scene {
         // Load saved game state before creating scene
         loadGameState();
 
-        this.load.spritesheet('hero_front', 'Assets/images/character/hero_front.png', { frameWidth: 113, frameHeight: 260 });
-        this.load.spritesheet('hero_back', 'Assets/images/character/hero_back.png', { frameWidth: 106, frameHeight: 257 });
-        this.load.spritesheet('hero_left', 'Assets/images/character/hero_left.png', { frameWidth: 136, frameHeight: 269 });
-        this.load.spritesheet('hero_right', 'Assets/images/character/hero_right.png', { frameWidth: 128, frameHeight: 266 });
+        this.load.spritesheet('hero_front', 'Assets/images/character/hero_front.png', { frameWidth: HERO_FRONT_FRAME.width, frameHeight: HERO_FRONT_FRAME.height });
+        this.load.spritesheet('hero_back', 'Assets/images/character/hero_back.png', { frameWidth: HERO_BACK_FRAME.width, frameHeight: HERO_BACK_FRAME.height });
+        this.load.spritesheet('hero_left', 'Assets/images/character/hero_left.png', { frameWidth: HERO_LEFT_FRAME.width, frameHeight: HERO_LEFT_FRAME.height });
+        this.load.spritesheet('hero_right', 'Assets/images/character/hero_right.png', { frameWidth: HERO_RIGHT_FRAME.width, frameHeight: HERO_RIGHT_FRAME.height });
         this.load.image('heart', 'Assets/images/heart_collectible.png');
         this.load.image('grass_tile', 'Assets/images/tiles/grass_tile.png');
         this.load.image('mud_tile', 'Assets/images/tiles/mud_tile.png');
@@ -260,57 +319,50 @@ class GameScene extends Phaser.Scene {
         // Create player at saved position from gameState
         this.player = this.physics.add.sprite(gameState.player.x, gameState.player.y, 'hero_front');
         this.player.setCollideWorldBounds(true);
-        this.player.setScale(0.3);
+        this.player.setScale(PLAYER_SCALE);
 
         // Set collision box in TEXTURE SPACE (will scale with sprite)
-        // Sprite is ~113x260 in texture space, we want small feet hitbox
-        // Desired world size: 12x10 pixels, so texture size = 12/0.3 x 10/0.3
-        const hitboxWidth = 50;   // 60 * 0.3 = 18 pixels in world
-        const hitboxHeight = 200;  // 50 * 0.3 = 15 pixels in world
-
-        this.player.body.setSize(hitboxWidth, hitboxHeight);
-        this.player.body.setOffset((this.player.width - hitboxWidth) / 2, this.player.height - hitboxHeight);
+        this.player.body.setSize(PLAYER_HITBOX_WIDTH, PLAYER_HITBOX_HEIGHT);
+        this.player.body.setOffset((this.player.width - PLAYER_HITBOX_WIDTH) / 2, this.player.height - PLAYER_HITBOX_HEIGHT);
 
         // Camera follow player only on mobile/touch devices
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
         if (isTouchDevice) {
-            const MOBILE_CAMERA_LERP = 0.1;
-            const MOBILE_CAMERA_ZOOM = 1.5;
             this.cameras.main.startFollow(this.player, true, MOBILE_CAMERA_LERP, MOBILE_CAMERA_LERP);
             this.cameras.main.setZoom(MOBILE_CAMERA_ZOOM);
         }
 
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('hero_left', { start: 0, end: 35 }),
-            frameRate: 36,
+            frames: this.anims.generateFrameNumbers('hero_left', { start: 0, end: DANCE_END_FRAME }),
+            frameRate: WALK_FRAME_RATE,
             repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
             frames: [{ key: 'hero_front', frame: 0 }],
-            frameRate: 20
+            frameRate: BACK_WALK_FRAME_RATE
         });
 
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('hero_right', { start: 0, end: 35 }),
-            frameRate: 36,
+            frames: this.anims.generateFrameNumbers('hero_right', { start: 0, end: DANCE_END_FRAME }),
+            frameRate: WALK_FRAME_RATE,
             repeat: -1
         });
 
-         this.anims.create({
+        this.anims.create({
             key: 'up',
-            frames: this.anims.generateFrameNumbers('hero_back', { start: 0, end: 18 }),
-            frameRate: 20,
+            frames: this.anims.generateFrameNumbers('hero_back', { start: 0, end: BACK_WALK_END_FRAME }),
+            frameRate: BACK_WALK_FRAME_RATE,
             repeat: -1
         });
 
         this.anims.create({
             key: 'down',
-            frames: this.anims.generateFrameNumbers('hero_front', { start: 0, end: 35 }),
-            frameRate: 36,
+            frames: this.anims.generateFrameNumbers('hero_front', { start: 0, end: DANCE_END_FRAME }),
+            frameRate: WALK_FRAME_RATE,
             repeat: -1
         });
 
@@ -366,12 +418,12 @@ class GameScene extends Phaser.Scene {
         });
 
         // Setup sounds
-        this.themeMusic = this.sound.add('theme', { loop: true, volume: 0.3 });
-        this.heartSound1 = this.sound.add('heart_collected', { volume: 0.7 });
-        this.heartSound2 = this.sound.add('heart_collected_2', { volume: 0.7 });
-        this.gateUnlockedSound = this.sound.add('gate_unlocked', { volume: 0.8 });
-        this.yesSound = this.sound.add('yes_sound', { volume: 0.8 });
-        this.noSound = this.sound.add('no_sound', { volume: 0.8 });
+        this.themeMusic = this.sound.add('theme', { loop: true, volume: THEME_MUSIC_VOLUME });
+        this.heartSound1 = this.sound.add('heart_collected', { volume: HEART_SOUND_VOLUME });
+        this.heartSound2 = this.sound.add('heart_collected_2', { volume: HEART_SOUND_VOLUME });
+        this.gateUnlockedSound = this.sound.add('gate_unlocked', { volume: GATE_SOUND_VOLUME });
+        this.yesSound = this.sound.add('yes_sound', { volume: YES_NO_SOUND_VOLUME });
+        this.noSound = this.sound.add('no_sound', { volume: YES_NO_SOUND_VOLUME });
 
         // Start background music
         this.themeMusic.play();
@@ -436,29 +488,28 @@ class GameScene extends Phaser.Scene {
             this.game.events.emit('valentineProposal');
         }
 
-        // Reset cooldown after 1 second
-        this.time.delayedCall(1000, () => {
+        // Reset cooldown
+        this.time.delayedCall(GATE_COLLISION_COOLDOWN_MS, () => {
             this.gateCollisionCooldown = false;
         });
     }
 
     update() {
-        const speed = 160;
         let velocityX = 0;
         let velocityY = 0;
         let currentAnim = 'turn';
 
         if (this.cursors.left.isDown || this.touchInput.left) {
-            velocityX = -speed;
+            velocityX = -PLAYER_SPEED;
             currentAnim = 'left';
         } else if (this.cursors.right.isDown || this.touchInput.right) {
-            velocityX = speed;
+            velocityX = PLAYER_SPEED;
             currentAnim = 'right';
         } else if (this.cursors.up.isDown || this.touchInput.up) {
-            velocityY = -speed;
+            velocityY = -PLAYER_SPEED;
             currentAnim = 'up';
         } else if (this.cursors.down.isDown || this.touchInput.down) {
-            velocityY = speed;
+            velocityY = PLAYER_SPEED;
             currentAnim = 'down';
         }
 
@@ -478,10 +529,8 @@ class GameScene extends Phaser.Scene {
             this.player.setTexture(textureKey);
 
             // Re-apply hitbox in texture space
-            const hitboxWidth = 50;
-            const hitboxHeight = 200;
-            this.player.body.setSize(hitboxWidth, hitboxHeight);
-            this.player.body.setOffset((this.player.width - hitboxWidth) / 2, this.player.height - hitboxHeight);
+            this.player.body.setSize(PLAYER_HITBOX_WIDTH, PLAYER_HITBOX_HEIGHT);
+            this.player.body.setOffset((this.player.width - PLAYER_HITBOX_WIDTH) / 2, this.player.height - PLAYER_HITBOX_HEIGHT);
         }
 
         this.player.anims.play(currentAnim, true);
@@ -494,8 +543,8 @@ class GameScene extends Phaser.Scene {
 
 const config = {
     type: Phaser.AUTO,
-    width: 1400,
-    height: 800,
+    width: GAME_WIDTH,
+    height: GAME_HEIGHT,
     parent: 'game-container',
     scale: {
         mode: Phaser.Scale.FIT,

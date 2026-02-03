@@ -1,3 +1,14 @@
+// ============================================
+// UI CONSTANTS
+// ============================================
+const CONFETTI_PARTICLE_COUNT = 50;
+const CONFETTI_INTERVAL_MS = 250;
+const CONFETTI_Z_INDEX = 10003;
+const CELEBRATION_DELAY_MS = 2000;
+const CELEBRATION_MUSIC_DELAY_MS = 100;
+const FADE_TRANSITION_MS = 500;
+const GAME_POLL_INTERVAL_MS = 100;
+
 // Get touch controls element once for reuse
 const touchControls = document.getElementById('touch-controls');
 
@@ -122,7 +133,7 @@ function setupUI(game) {
         }
 
         // Trigger infinite confetti celebration!
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10003 };
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: CONFETTI_Z_INDEX };
 
         function randomInRange(min, max) {
             return Math.random() * (max - min) + min;
@@ -130,20 +141,18 @@ function setupUI(game) {
 
         // Start infinite confetti loop
         window.confettiInterval = setInterval(function() {
-            const particleCount = 50;
-
             // Create confetti bursts from different positions
             confetti(Object.assign({}, defaults, {
-                particleCount,
+                particleCount: CONFETTI_PARTICLE_COUNT,
                 origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
                 colors: ['#ff69b4', '#ff1493', '#ffc0cb', '#ff85c1', '#ffffff']
             }));
             confetti(Object.assign({}, defaults, {
-                particleCount,
+                particleCount: CONFETTI_PARTICLE_COUNT,
                 origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
                 colors: ['#ff69b4', '#ff1493', '#ffc0cb', '#ff85c1', '#ffffff']
             }));
-        }, 250);
+        }, CONFETTI_INTERVAL_MS);
 
         // Save proposal acceptance to localStorage
         if (window.gameState) {
@@ -200,8 +209,8 @@ function setupUI(game) {
                 if (window.celebrationMusic && !window.celebrationMusic.isPlaying) {
                     window.celebrationMusic.play();
                 }
-            }, 100);
-        }, 2000);
+            }, CELEBRATION_MUSIC_DELAY_MS);
+        }, CELEBRATION_DELAY_MS);
     });
 }
 
@@ -216,7 +225,7 @@ function setupStartScreen(game) {
         console.log('🎮 Begin Adventure clicked!');
 
         // Hide start screen with fade out
-        startScreen.style.transition = 'opacity 0.5s ease-out';
+        startScreen.style.transition = `opacity ${FADE_TRANSITION_MS}ms ease-out`;
         startScreen.style.opacity = '0';
 
         setTimeout(() => {
@@ -224,7 +233,7 @@ function setupStartScreen(game) {
 
             // Show instructions modal
             instructionsModal.style.display = 'block';
-        }, 500);
+        }, FADE_TRANSITION_MS);
     });
 
     // Handle "Got it!" button click
@@ -273,4 +282,4 @@ const poll_for_game = setInterval(() => {
         setupSplashScreen(window.game);
         setupStartScreen(window.game);
     }
-}, 100);
+}, GAME_POLL_INTERVAL_MS);
